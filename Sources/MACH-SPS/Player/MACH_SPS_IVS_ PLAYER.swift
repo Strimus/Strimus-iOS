@@ -26,6 +26,10 @@ class SPSIVSPlayer: SPSPlayerView {
         return self
     }
     
+    func updateIVSPlayer(url: URL) {
+        player?.load(url)
+    }
+    
     override func play() {
         player?.play()
     }
@@ -39,5 +43,9 @@ extension SPSIVSPlayer: IVSPlayer.Delegate {
     func player(_ player: IVSPlayer, didChangeState state: IVSPlayer.State) {
         self.state = SPSPlayerState(avsState: state)
         self.delegate?.stateUpdated(state: self.state)
+    }
+    
+    func player(_ player: IVSPlayer, didFailWithError error: Error) {
+        self.delegate?.playerError(error: error)
     }
 }

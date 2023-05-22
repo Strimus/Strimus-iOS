@@ -10,6 +10,7 @@ import UIKit
 
 public protocol SPSPlayerDelegate: AnyObject {
     func stateUpdated(state: SPSPlayerState)
+    func playerError(error: Error)
 }
 
 public class SPSPlayerView: UIView {
@@ -25,6 +26,10 @@ public class SPSPlayer: UIView {
     
     public func getPlayerView(url: URL) -> SPSPlayerView {
         ivsPlayer.getIVSPlayerView(url: url)
+    }
+    
+    public func updatePlayerView(url: URL) {
+        ivsPlayer.updateIVSPlayer(url: url)
     }
 }
 

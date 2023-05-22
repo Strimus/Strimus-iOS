@@ -17,44 +17,44 @@ public class Strimus {
     public static let shared = Strimus()
     public weak var delegate: StrimusDelegate?
     
-    private var key: String?
-    private var secret: String?
-    private var token: String?
-    private var clientId: String?
-    private var uniqueId: String?
+    var key: String?
+    var token: String?
+    var uniqueId: String?
     
+    //MARK: - Configuration -
     public func configure(key: String) {
         self.key = key
+       
     }
     
-    public func authenticateStreamer(clientId: String, uniqueId: String, secret: String) {
-        guard let key else {
-            print("Strimus.shared.configure(key:) not called, please configure sdk before authentication")
-            return
-        }
-        self.clientId = clientId
+    public func setStreamerData(uniqueId: String?, streamerToken: String?) {
         self.uniqueId = uniqueId
-        self.secret = secret
-        authRequest(clientId: clientId, uniqueId: uniqueId, secret: secret, key: key)
+        self.token = streamerToken
     }
     
-    private func authRequest(clientId: String, uniqueId: String, secret: String, key: String) {
+    //MARK: - Player -
+    //MARK: Concurrency
+    public func getStreams() async throws -> [SBSStream] {
+        let client = SBSClient<SBSResponse<[SBSStream]>>()
+        
+        let result = try await client.performRequest(path: "/streams",
+                                        method: .get,
+                                        parameters: nil)
+        
+        return result.data
+    }
+    
+    //MARK: Completion Block
+    public func getStreams(completion: @escaping ([SBSStream]?, Error?) -> Void) {
         Task {
             do {
-                let client = SBSClient<SBSResponse<SBSAuthResponse>>()
-                let parametes = ["clientId": clientId,
-                                 "uniqueId": uniqueId,
-                                 "secret": secret,
-                                 "key": key]
-                let response = try await client.performRequest(path: "",
-                                                               method: .post,
-                                                               parameters: parametes)
-                self.token = response.data.token
+                let streams = try await getStreams()
+                completion(streams, nil)
             } catch {
-                delegate?.authFailed(reason: error.localizedDescription)
+                completion(nil, error)
             }
-           
-            
         }
     }
+    //MARK: -
+    
 }

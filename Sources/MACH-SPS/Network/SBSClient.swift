@@ -14,12 +14,21 @@ enum SBSMethod: String {
 
 class SBSClient<T:Codable> {
     
-    let url = URL(string: "http://164.92.178.132:5555")!
+    let baseURL = "http://164.92.178.132:5555"
     
     func performRequest(path: String, method: SBSMethod, parameters: [String: Any]?) async throws -> T {
+        let url = URL(string: baseURL + path)!
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+       
+        if let key = Strimus.shared.key {
+            request.addValue(key, forHTTPHeaderField: "key")
+        }
+        
+        if let token = Strimus.shared.token {
+            request.addValue(token, forHTTPHeaderField: "token")
+        }
         
         if let parameters, parameters.isEmpty == false {
             let jsonData = try? JSONSerialization.data(withJSONObject: parameters)
