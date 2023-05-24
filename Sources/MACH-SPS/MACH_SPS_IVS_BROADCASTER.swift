@@ -22,27 +22,42 @@ public class SPSIvsBroadcaster: NSObject {
     private var session: IVSBroadcastSession?
     private var previewView: UIView?
     
-    public func createStream(id: String) {
-        requestVideoPermission(id: id)
+    private var streamURL: URL?
+    private var streamKey: String?
+    
+    public func createStream() {
+        Task {
+            do {
+                let data = try await Strimus.shared.createStream()
+                streamURL = data.streamUrl
+                streamKey = data.streamKey
+            } catch {
+                print("error while creating stream: \(error.localizedDescription)")
+            }
+        }
+        
+        requestVideoPermission()
     }
     
     public func startStream() {
-        try? session?.start(with: URL(string: "rtmps://24406f8ae3f4.global-contribute.live-video.net:443/app/")!,
-                       streamKey: "sk_eu-central-1_QwCF6hX4X1SZ_g2agBVjRV7zSjyTL4WLdoL9X9byL79")
+        guard let url = streamURL else { return }
+        guard let key = streamKey else { return }
+        try? session?.start(with: url,
+                       streamKey: key)
     }
     
     public func stopStream() {
         session?.stop()
     }
     
-    private func requestVideoPermission(id: String){
+    private func requestVideoPermission(){
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized: // permission already granted.
-            requestAudioPermission(id: id)
+            requestAudioPermission()
         case .notDetermined:
            AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                if granted {
-                   self?.requestAudioPermission(id: id)
+                   self?.requestAudioPermission()
                }
            }
         case .denied, .restricted: // permission denied.
@@ -52,14 +67,14 @@ public class SPSIvsBroadcaster: NSObject {
         }
     }
     
-    private func requestAudioPermission(id: String){
+    private func requestAudioPermission(){
         switch AVCaptureDevice.authorizationStatus(for: .audio) {
         case .authorized: // permission already granted.
-            setupStream(id: id)
+            setupStream()
         case .notDetermined:
            AVCaptureDevice.requestAccess(for: .audio) { [weak self] granted in
                if granted {
-                   self?.setupStream(id: id)
+                   self?.setupStream()
                }
            }
         case .denied, .restricted: // permission denied.
@@ -69,7 +84,7 @@ public class SPSIvsBroadcaster: NSObject {
         }
     }
     
-    private func setupStream(id: String) {
+    private func setupStream() {
         session = try? IVSBroadcastSession(
             configuration: IVSPresets.configurations().basicPortrait(),
            descriptors: IVSPresets.devices().frontCamera(),

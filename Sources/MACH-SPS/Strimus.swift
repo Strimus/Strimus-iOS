@@ -55,6 +55,18 @@ public class Strimus {
             }
         }
     }
-    //MARK: -
+    //MARK: - Broadcaster -
+    //MARK: Concurrency
+    public func createStream() async throws -> SBSBroadcastData {
+        let client = SBSClient<SBSResponse<SBSBroadcastData>>()
+        
+        let parameters = ["streamData": ["uniqueId": uniqueId]]
+        
+        let result = try await client.performRequest(path: "/stream",
+                                        method: .post,
+                                        parameters: parameters)
+        
+        return result.data
+    }
     
 }
