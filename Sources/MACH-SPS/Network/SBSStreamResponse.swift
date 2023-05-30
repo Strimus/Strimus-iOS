@@ -14,7 +14,7 @@ public struct SBSStream: Codable {
 }
 
 public struct SBSStreamData: Codable {
-    public let uniqueId: Int
+    public let uniqueId: String
     public let name: String?
     public let image: URL?
 }

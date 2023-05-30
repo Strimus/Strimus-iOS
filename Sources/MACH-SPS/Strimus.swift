@@ -60,7 +60,8 @@ public class Strimus {
     public func createStream() async throws -> SBSBroadcastData {
         let client = SBSClient<SBSResponse<SBSBroadcastData>>()
         
-        let parameters = ["streamData": ["uniqueId": uniqueId]]
+        let parameters: [String:Any] = ["source": "mux",
+                          "streamData": ["uniqueId": uniqueId]]
         
         let result = try await client.performRequest(path: "/stream",
                                         method: .post,

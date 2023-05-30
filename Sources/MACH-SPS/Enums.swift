@@ -49,3 +49,8 @@ public enum SPSBroadcasterState {
         }
     }
 }
+
+public enum BroadcastSource: String {
+    case aws = "AWS"
+    case mux = "MUX"
+}
