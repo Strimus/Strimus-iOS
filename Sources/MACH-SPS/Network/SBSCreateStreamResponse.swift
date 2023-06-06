@@ -13,3 +13,7 @@ public struct SBSBroadcastData: Codable {
     public let streamUrl: URL
     public let streamKey: String
 }
+
+public struct SBSStopBroadcastData: Codable {
+    public let id: Int
+}

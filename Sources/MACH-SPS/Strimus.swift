@@ -34,10 +34,10 @@ public class Strimus {
     
     //MARK: - Player -
     //MARK: Concurrency
-    public func getStreams() async throws -> [SBSStream] {
+    public func getStreams(type: StreamListType) async throws -> [SBSStream] {
         let client = SBSClient<SBSResponse<[SBSStream]>>()
         
-        let result = try await client.performRequest(path: "/streams",
+        let result = try await client.performRequest(path: "/streams?type=\(type.rawValue)",
                                         method: .get,
                                         parameters: nil)
         
@@ -45,11 +45,16 @@ public class Strimus {
     }
     
     //MARK: Completion Block
-    public func getStreams(completion: @escaping ([SBSStream]?, Error?) -> Void) {
+    public func getStreams(type: StreamListType, completion: @escaping ([SBSStream]?, Error?) -> Void) {
         Task {
             do {
-                let streams = try await getStreams()
-                completion(streams, nil)
+                let streams = try await getStreams(type: type)
+                if type == .past {
+                    let filteredStreams = streams.filter({ $0.videos?.first != nil })
+                    completion(filteredStreams, nil)
+                } else {
+                    completion(streams, nil)
+                }
             } catch {
                 completion(nil, error)
             }
@@ -57,10 +62,10 @@ public class Strimus {
     }
     //MARK: - Broadcaster -
     //MARK: Concurrency
-    public func createStream() async throws -> SBSBroadcastData {
+    public func createStream(source: BroadcastSource) async throws -> SBSBroadcastData {
         let client = SBSClient<SBSResponse<SBSBroadcastData>>()
         
-        let parameters: [String:Any] = ["source": "mux",
+        let parameters: [String:Any] = ["source": source.getLabel(),
                           "streamData": ["uniqueId": uniqueId]]
         
         let result = try await client.performRequest(path: "/stream",
@@ -68,6 +73,15 @@ public class Strimus {
                                         parameters: parameters)
         
         return result.data
+    }
+    
+    public func stopStream(id: Int) async throws {
+        let client = SBSClient<SBSResponse<SBSStopBroadcastData>>()
+        
+        let _ = try await client.performRequest(path: "/stream/\(id)",
+                                        method: .delete,
+                                        parameters: nil)
+        
     }
     
 }

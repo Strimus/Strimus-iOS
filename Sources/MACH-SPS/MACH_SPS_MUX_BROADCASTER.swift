@@ -33,22 +33,11 @@ public class SPSMuxBroadcaster: SPSBroadcasterView {
         rtmpStream.sessionPreset = AVCaptureSession.Preset.medium
         rtmpStream.videoOrientation = .portrait
         /// Specifies the video capture settings.
-        rtmpStream.videoCapture(for: 0)?.isVideoMirrored = false
-        rtmpStream.videoCapture(for: 0)?.preferredVideoStabilizationMode = .auto
+        //rtmpStream.videoCapture(for: 0)?.isVideoMirrored = false
+        //rtmpStream.videoCapture(for: 0)?.preferredVideoStabilizationMode = .auto
 
-        rtmpStream.videoSettings = VideoCodecSettings(
-              videoSize: .init(width: 480, height: 840),
-              profileLevel: kVTProfileLevel_H264_Baseline_3_1 as String,
-              bitRate: 640 * 1000,
-              maxKeyFrameIntervalDuration: 2,
-              scalingMode: .trim,
-              bitRateMode: .average,
-              allowFrameReordering: nil,
-              isHardwareEncoderEnabled: true
-        )
-        
         // Configure the RTMP audio stream
-        rtmpStream.audioSettings = AudioCodecSettings(bitRate: 128*00)
+        rtmpStream.audioSettings = AudioCodecSettings(bitRate: 64*00)
         
         // Attatch to the default audio device
         rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
@@ -65,18 +54,12 @@ public class SPSMuxBroadcaster: SPSBroadcasterView {
         rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
         rtmpConnection.addEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
         
-        mthkView = MTHKView(frame: CGRect(origin: .zero, size: CGSize(width: Int(rtmpStream.videoSettings.videoSize.width),
-                                                                      height: Int(rtmpStream.videoSettings.videoSize.height))))
-        mthkView.videoOrientation = rtmpStream.videoOrientation
-        mthkView.videoGravity = .resizeAspectFill
-       
-        previewView = mthkView
-        delegate?.streamIsReady(preview: previewView)
-        
         DispatchQueue.main.async { [unowned self] in
-            self.mthkView.attachStream(self.rtmpStream)
+            self.mthkView = MTHKView(frame: CGRect(origin: .zero, size: CGSize(width: Int(self.rtmpStream.videoSettings.videoSize.width), height: Int(self.rtmpStream.videoSettings.videoSize.height))))
+            self.mthkView.videoOrientation = self.rtmpStream.videoOrientation
+            self.mthkView.videoGravity = .resizeAspectFill
         }
-        
+       
         if let streamURL {
             rtmpConnection.connect(streamURL.absoluteString)
         }
@@ -90,7 +73,12 @@ public class SPSMuxBroadcaster: SPSBroadcasterView {
     }
     
     public override func stopStream() {
-        rtmpStream.close()
+        Task {
+            if let id = streamId {
+                try? await Strimus.shared.stopStream(id: id)
+            }
+            rtmpStream.close()
+        }
     }
     
     @objc
@@ -104,8 +92,13 @@ public class SPSMuxBroadcaster: SPSBroadcasterView {
 
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
+            DispatchQueue.main.async { [unowned self] in
+                self.mthkView.attachStream(self.rtmpStream)
+                previewView = mthkView
+                self.delegate?.streamIsReady(preview: previewView)
+            }
+            
             state = .disconnected
-            delegate?.streamIsReady(preview: previewView)
         case RTMPStream.Code.publishStart.rawValue:
             delegate?.stateUpdated(state: .connected)
             state = .connected

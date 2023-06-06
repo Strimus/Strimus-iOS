@@ -53,4 +53,13 @@ public enum SPSBroadcasterState {
 public enum BroadcastSource: String {
     case aws = "AWS"
     case mux = "MUX"
+    
+    func getLabel() -> String {
+        self.rawValue.lowercased()
+    }
+}
+
+public enum StreamListType: String, Codable {
+    case live = "live"
+    case past = "old_stream"
 }

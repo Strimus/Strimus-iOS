@@ -40,7 +40,13 @@ public class SPSIvsBroadcaster: SPSBroadcasterView {
     }
     
     public override func stopStream() {
-        session?.stop()
+        Task {
+            if let id = streamId {
+                try? await Strimus.shared.stopStream(id: id)
+            }
+            session?.stop()
+        }
+        
     }
     
 }

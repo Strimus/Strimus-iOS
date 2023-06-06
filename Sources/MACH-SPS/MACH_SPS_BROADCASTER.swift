@@ -15,18 +15,19 @@ public protocol SPSBroadcasterDelegate: AnyObject {
 }
 
 public class SPSBroadcaster: UIView {
-    var spsBroadcasterView: SPSBroadcasterView?
-    
+   
     public func getBroadcasterView(source: BroadcastSource) -> SPSBroadcasterView {
        switch source {
         case .aws:
-            spsBroadcasterView = SPSIvsBroadcaster()
-            return spsBroadcasterView!
+            return SPSIvsBroadcaster()
         case .mux:
-            spsBroadcasterView = SPSMuxBroadcaster()
-            return spsBroadcasterView!
+            return SPSMuxBroadcaster()
         }
 
+    }
+    
+    deinit {
+        print("")
     }
 }
 
@@ -36,14 +37,16 @@ public class SPSBroadcasterView: NSObject {
     
     var streamURL: URL?
     var streamKey: String?
+    var streamId: Int?
     var previewView: UIView?
     
-    public func createStream() {
+    public func createStream(source: BroadcastSource) {
         Task {
             do {
-                let data = try await Strimus.shared.createStream()
+                let data = try await Strimus.shared.createStream(source: source)
                 streamURL = data.streamUrl
                 streamKey = data.streamKey
+                streamId = data.id
                 requestVideoPermission()
             } catch {
                 print("error while creating stream: \(error.localizedDescription)")
@@ -91,4 +94,8 @@ public class SPSBroadcasterView: NSObject {
     public func startStream() { }
     
     public func stopStream() { }
+    
+    deinit {
+        print("")
+    }
 }

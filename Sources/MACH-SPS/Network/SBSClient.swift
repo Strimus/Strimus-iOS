@@ -10,6 +10,7 @@ import Foundation
 enum SBSMethod: String {
     case get = "GET"
     case post = "POST"
+    case delete = "DELETE"
 }
 
 class SBSClient<T:Codable> {
