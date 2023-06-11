@@ -1,6 +1,6 @@
-# MACH-SPS
+# MACH-SPS (Beta)
 
-A description of this package.
+Bu paket şu an sadece SPM ile yüklenebilmektedir.
 
 <b>Kurulum:</b>
 ```Swift
