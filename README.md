@@ -73,7 +73,7 @@ class PlayerViewController: UIViewController {
  <b>Yayın Başlatma:</b>
  
  <i>Authentication:</i> 
- Yayın başlatabilmek için kendi server'ınız ile strimus rest-api'den token almalısınız, güvenlik sebebiyle strimus sdk'da token oluşturulamaz. uniqueId strimus'tan bağımsız olarak yayıncının kendi tarafınızdaki user id'sidir.
+ Yayın başlatabilmek için kendi server'ınız ile strimus rest-api'den [token](http://164.92.178.132:5555/api-docs/) almalısınız, güvenlik sebebiyle strimus sdk'da token oluşturulamaz. uniqueId strimus'tan bağımsız olarak yayıncının kendi tarafınızdaki user id'sidir.
  
  ```Swift
  Strimus.shared.setStreamerData(uniqueId: {your-user-id}, streamerToken: {token-from-strimus-rest-api})
