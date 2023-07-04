@@ -84,4 +84,13 @@ public class Strimus {
         
     }
     
+    func getAgoraSubscriberToken(streamId: String) async throws -> SBSSubscriber {
+        let client = SBSClient<SBSResponse<SBSSubscriber>>()
+        
+        let response = try await client.performRequest(path: "/subscriber/\(streamId)?uid=0",
+                                        method: .get,
+                                        parameters: nil)
+        return response.data
+    }
+    
 }

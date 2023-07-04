@@ -13,6 +13,7 @@ public struct SBSStream: Codable {
     public let streamData: SBSStreamData
     public let url: URL?
     public let videos: [SBSStreamVideo]?
+    public let channelName: String?
 }
 
 public struct SBSStreamVideo: Codable {

@@ -13,21 +13,36 @@ class SPSIVSPlayer: SPSPlayerView {
 
     private var player: IVSPlayer?
     
-    func getIVSPlayerView(url: URL) -> SPSIVSPlayer {
+    func setupIVSPlayerView(stream: SBSStream) {
         playerView.removeFromSuperview()
         player = IVSPlayer()
         player?.delegate = self
         playerView.player = player
-        player?.load(url)
+        if stream.type == .live {
+            if let url = stream.url {
+                player?.load(url)
+            }
+        } else {
+            if let url = stream.videos?.first?.url {
+                player?.load(url)
+            }
+        }
         player?.looping = true
         playerView.frame = self.bounds
         addSubview(playerView)
         playerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        return self
     }
     
-    func updateIVSPlayer(url: URL) {
-        player?.load(url)
+    func updateIVSPlayer(stream: SBSStream) {
+        if stream.type == .live {
+            if let url = stream.url {
+                player?.load(url)
+            }
+        } else {
+            if let url = stream.videos?.first?.url {
+                player?.load(url)
+            }
+        }
     }
     
     override func play() {

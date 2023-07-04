@@ -8,6 +8,8 @@
 import Foundation
 import AmazonIVSPlayer
 import AmazonIVSBroadcast
+import AgoraRtcKit
+
 public enum SPSPlayerState {
     case idle, ready, buffering, playing, ended, unknown
     
@@ -22,6 +24,23 @@ public enum SPSPlayerState {
         case .playing:
             self = .playing
         case .ended:
+            self = .ended
+        @unknown default:
+            self = .unknown
+        }
+    }
+    
+    init(agoraState: AgoraConnectionState) {
+        switch agoraState {
+        case .disconnected:
+            self = .ended
+        case .connecting:
+            self = .buffering
+        case .connected:
+            self = .playing
+        case .reconnecting:
+            self = .buffering
+        case .failed:
             self = .ended
         @unknown default:
             self = .unknown

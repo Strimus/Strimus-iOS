@@ -18,14 +18,20 @@ let package = Package(
         .package(
                 url: "https://github.com/shogo4405/HaishinKit.swift",
                 from: "1.5.1"
-                )
+                ),
+        .package(url: "https://github.com/AgoraIO/AgoraRtcEngine_iOS.git",
+                 from: "4.2.1"),
+        
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "MACH-SPS",
-            dependencies: ["AmazonIVSPlayer","AmazonIVSBroadcast",.product(name: "HaishinKit", package: "HaishinKit.swift")]),
+            dependencies: ["AmazonIVSPlayer",
+                           "AmazonIVSBroadcast",
+                           .product(name: "HaishinKit", package: "HaishinKit.swift"),
+                           .product(name: "RtcBasic", package: "AgoraRtcEngine_iOS")]),
         .testTarget(
             name: "MACH-SPSTests",
             dependencies: ["MACH-SPS"]),
