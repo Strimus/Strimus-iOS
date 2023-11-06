@@ -15,7 +15,7 @@ enum SBSMethod: String {
 
 class SBSClient<T:Codable> {
     
-    let baseURL = "http://164.92.178.132:5555"
+    let baseURL = "https://straas-api.themachinarium.xyz"
     
     func performRequest(path: String, method: SBSMethod, parameters: [String: Any]?) async throws -> T {
         let url = URL(string: baseURL + path)!
