@@ -1,0 +1,32 @@
+{
+  "pins" : [
+    {
+      "identity" : "agorartcengine_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AgoraIO/AgoraRtcEngine_iOS.git",
+      "state" : {
+        "revision" : "bf4f7bd585bbaa773ee83d753d8b1b97f7f831c5",
+        "version" : "4.2.6"
+      }
+    },
+    {
+      "identity" : "haishinkit.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/shogo4405/HaishinKit.swift",
+      "state" : {
+        "revision" : "4d16635e4d5011c923fbf79cc2dcfdbc70821ab0",
+        "version" : "1.7.2"
+      }
+    },
+    {
+      "identity" : "logboard",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/shogo4405/Logboard.git",
+      "state" : {
+        "revision" : "6a7cbf54553936103084ed72cfb6d6f836758229",
+        "version" : "2.4.1"
+      }
+    }
+  ],
+  "version" : 2
+}
