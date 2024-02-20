@@ -93,4 +93,11 @@ public class Strimus {
         return response.data
     }
     
+    // MARK: - Socket
+    
+    public func getSocket() -> SBSSocket{
+        let socket = SBSSocket()
+        return socket
+    }
+    
 }

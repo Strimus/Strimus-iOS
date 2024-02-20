@@ -8,7 +8,7 @@
 import SocketIO
 import Foundation
 
-protocol SBSSocketManagerDelegate: AnyObject {
+protocol SBSSocketDelegate: AnyObject {
     func handleSocket(model: SBSSocketResponse)
 }
 
@@ -20,19 +20,18 @@ public enum SocketIOEventType: String {
     case roomInfo
 }
 
-public class SBSSocketManager {
+public class SBSSocket {
     
     private var manager: SocketManager!
-    static let shared = SBSSocketManager()
     lazy var socket = manager.defaultSocket
     
-    weak var delegate: SBSSocketManagerDelegate?
+    weak var delegate: SBSSocketDelegate?
     
     let socketQeue = DispatchQueue.init(label: "socket-io-qeue-strimus", qos: .utility)
     
     var lastRoomID: String?
     var roomId: String?
-    private init() {
+    init() {
         let serviceURL = "wss://straas-api.themachinarium.xyz/"
         manager = SocketManager(socketURL: URL(string: serviceURL)!, config: [.log(true), .compress])
         setConfigs()
@@ -142,8 +141,4 @@ struct CustomCodingKey: CodingKey {
     return nil
   }
 
-}
-
-public struct SBSSocketResponse: Codable {
-    let userCount: Int?
 }

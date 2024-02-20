@@ -7,6 +7,9 @@
 
 import Foundation
 
+public struct SBSSocketResponse: Codable {
+    let userCount: Int?
+}
 
 /*
  {
