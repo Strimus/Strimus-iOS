@@ -21,8 +21,8 @@ let package = Package(
                 ),
         .package(url: "https://github.com/AgoraIO/AgoraRtcEngine_iOS.git",
                  from: "4.2.1"),
-        .package(url: "https://github.com/daltoniam/Starscream.git",
-                 from: "4.0.0")
+        .package(url: "https://github.com/socketio/socket.io-client-swift",
+                 .upToNextMinor(from: "15.0.0"))
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -32,7 +32,8 @@ let package = Package(
             dependencies: ["AmazonIVSPlayer",
                            "AmazonIVSBroadcast",
                            .product(name: "HaishinKit", package: "HaishinKit.swift"),
-                           .product(name: "RtcBasic", package: "AgoraRtcEngine_iOS")]),
+                           .product(name: "RtcBasic", package: "AgoraRtcEngine_iOS"),
+                           .product(name: "SocketIO", package: "socket.io-client-swift")]),
         .testTarget(
             name: "MACH-SPSTests",
             dependencies: ["MACH-SPS"]),
