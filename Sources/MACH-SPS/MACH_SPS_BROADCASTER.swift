@@ -22,7 +22,11 @@ public class SPSBroadcaster: UIView {
             return SPSIvsBroadcaster()
         case .mux:
             return SPSMuxBroadcaster()
-        }
+       case .erstream:
+           return SPSErstreamBroadcaster()
+       case .agora:
+           return SPSAgoraBroadcaster()
+       }
 
     }
     
@@ -38,6 +42,9 @@ public class SPSBroadcasterView: NSObject {
     var streamURL: URL?
     var streamKey: String?
     var streamId: Int?
+    var appId: String?
+    var token: String?
+    var channelName: String?
     var previewView: UIView?
     
     public func createStream(source: BroadcastSource) {
@@ -47,6 +54,9 @@ public class SPSBroadcasterView: NSObject {
                 streamURL = data.streamUrl
                 streamKey = data.streamKey
                 streamId = data.id
+                appId = data.appId
+                token = data.token
+                channelName = data.channelName
                 requestVideoPermission()
             } catch {
                 print("error while creating stream: \(error.localizedDescription)")

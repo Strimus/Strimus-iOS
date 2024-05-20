@@ -16,6 +16,7 @@ public class Strimus {
     
     public static let shared = Strimus()
     public weak var delegate: StrimusDelegate?
+    public var socket =  SBSSocket.shared
     
     var key: String?
     var token: String?
@@ -95,9 +96,8 @@ public class Strimus {
     
     // MARK: - Socket
     
-    public func getSocket() -> SBSSocket{
-        let socket = SBSSocket()
-        return socket
+    public  func connectSocket(){
+        socket.connect()
     }
     
 }

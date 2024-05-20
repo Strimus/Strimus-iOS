@@ -8,7 +8,13 @@
 import Foundation
 
 public struct SBSSocketResponse: Codable {
+    let userId: String?
+    let roomId: String?
+    let roomOwner: String?
+    let partnerKey: String?
     let userCount: Int?
+    let socketId: String?
+    let nickName: String?
 }
 
 /*

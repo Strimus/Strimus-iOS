@@ -8,8 +8,8 @@
 import SocketIO
 import Foundation
 
-protocol SBSSocketDelegate: AnyObject {
-    func handleSocket(model: SBSSocketResponse)
+public protocol SBSSocketDelegate: AnyObject {
+    func handleSocket(userCount: Int?)
 }
 
 public enum SocketIOEventType: String {
@@ -22,19 +22,20 @@ public enum SocketIOEventType: String {
 
 public class SBSSocket {
     
-    private var manager: SocketManager!
-    lazy var socket = manager.defaultSocket
+    static let shared = SBSSocket()
     
-    weak var delegate: SBSSocketDelegate?
+    private var manager = SocketManager(socketURL: URL(string: "wss://straas-api.themachinarium.xyz/")!, config: [.log(true), .compress, .extraHeaders(["partnerkey" : "1"]), .forceWebsockets(true)])
+    var socket: SocketIOClient
+    
+    public weak var delegate: SBSSocketDelegate?
     
     let socketQeue = DispatchQueue.init(label: "socket-io-qeue-strimus", qos: .utility)
     
     var lastRoomID: String?
     var roomId: String?
     init() {
-        let serviceURL = "wss://straas-api.themachinarium.xyz/"
-        manager = SocketManager(socketURL: URL(string: serviceURL)!, config: [.log(true), .compress])
-        setConfigs()
+        socket = manager.defaultSocket
+//        setConfigs()
 
         manager.handleQueue = socketQeue
         
@@ -46,12 +47,12 @@ public class SBSSocket {
         
         socket.on(clientEvent: .connect) { [weak self] data, ack in
             print("socket connected")
+            
         }
         
         socket.on(clientEvent: .reconnectAttempt) { [weak self] data, ack in
-            self?.setConfigs()
+            self?.reconnect()
         }
-        
         
         socket.on(clientEvent: .statusChange) { [weak self] data, ack in
             
@@ -60,10 +61,19 @@ public class SBSSocket {
         socket.onAny { [weak self] event in
             self?.handleMessage(event: event)
         }
+        
+        socket.on("roomInfo") { data, ack in
+            
+        }
+        
+        socket.on("join") { data, ack in
+            
+        }
+        
     }
     
     private func setConfigs() {
-        self.manager.engine?.extraHeaders = ["partnerKey" : "1"]
+        self.manager.engine?.extraHeaders = ["partnerkey" : "1"]
         self.manager.setConfigs([.log(false), .forceWebsockets(true)])
     }
     
@@ -71,25 +81,18 @@ public class SBSSocket {
         socket.manager?.reconnect()
     }
     
-    func connect() {
+    public func connect() {
         guard socket.status != .connected, socket.status != .connecting else { return }
         socket.connect()
     }
     
-    func createRoom(roomId: String, roomName: String, userID: String, roomType: String) {
+    public func createRoom(roomId: String, roomName: String, userID: String, roomType: String, partnerKey: String) {
         guard socket.status == .connected else { return }
-        socket.emit("createRoom", ["roomId": roomId, "roomName": roomName, "userID": userID, "roomType": roomType])
+        socket.emit("createRoom", ["roomId": roomId, "roomName": roomName, "userID": userID, "roomType": roomType, "partnerKey": partnerKey])
     }
     
-    func joinRoom(streamId: String, roomId: String? = nil) {
-        guard socket.status == .connected else { return }
-        var joinParams = [String : String]()
-        if let id = roomId {
-            joinParams["roomId"] = id
-        } else if let id = lastRoomID {
-            joinParams["roomId"] = id
-        }
-        socket.emit("join", joinParams)
+    public func joinRoom(roomId: String) {
+        socket.emit("join", ["roomId": roomId])
     }
     
     func leaveRoom(roomId: String) {
@@ -102,8 +105,8 @@ public class SBSSocket {
         guard let items = event.items else { return }
         guard let data = try? JSONSerialization.data(withJSONObject: items, options: .prettyPrinted) else { return }
         
-        if let response: SBSSocketResponse = decodeItems(data: data) {
-            delegate?.handleSocket(model: response)
+        if let response: [SBSSocketResponse] = decodeItems(data: data) {
+            delegate?.handleSocket(userCount: response.first?.userCount)
         }
     }
     

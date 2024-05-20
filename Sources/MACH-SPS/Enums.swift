@@ -72,9 +72,20 @@ public enum SPSBroadcasterState {
 public enum BroadcastSource: String {
     case aws = "AWS"
     case mux = "MUX"
+    case erstream = "ERSTREAM"
+    case agora = "AGORA"
     
     func getLabel() -> String {
-        self.rawValue.lowercased()
+        switch self {
+        case .aws:
+            return "aws"
+        case .mux:
+            return "mux"
+        case .erstream:
+            return "aws"
+        case .agora:
+            return "agora"
+        }
     }
 }
 
