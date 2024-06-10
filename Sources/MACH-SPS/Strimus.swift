@@ -38,7 +38,7 @@ public class Strimus {
     public func getStreams(type: StreamListType) async throws -> [SBSStream] {
         let client = SBSClient<SBSResponse<[SBSStream]>>()
         
-        let result = try await client.performRequest(path: "/streams?type=\(type.rawValue)",
+        let result = try await client.performRequest(path: "/streams?type=\(type.getValue())",
                                         method: .get,
                                         parameters: nil)
         

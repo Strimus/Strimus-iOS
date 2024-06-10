@@ -89,7 +89,17 @@ public enum BroadcastSource: String {
     }
 }
 
-public enum StreamListType: String, Codable {
-    case live = "live"
-    case past = "old_stream"
+@objc
+public enum StreamListType: Int, Codable {
+    case live
+    case past
+    
+    public  func getValue() -> String{
+        switch self {
+        case .live:
+            return "live"
+        case .past:
+            return "past"
+        }
+    }
 }
