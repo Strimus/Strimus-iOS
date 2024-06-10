@@ -23,8 +23,8 @@ let package = Package(
                  from: "4.2.1"),
         .package(url: "https://github.com/socketio/socket.io-client-swift",
                  .upToNextMinor(from: "16.0.0")),
-        .package(url: "https://github.com/dalton",
-                .upToNextMinor(from: "4.0.4"))
+        .package(url: "https://github.com/dalton", 
+                 from: "4.0.4")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
