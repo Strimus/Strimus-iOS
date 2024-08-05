@@ -17,11 +17,9 @@ let package = Package(
         // .package(url: /* package url */, from: "1.0.0"),
         .package(
                 url: "https://github.com/shogo4405/HaishinKit.swift",
-                    .upToNextMajor(from: "1.5.1")),
+                    .upToNextMinor(from: "1.7.4")),
         .package(url: "https://github.com/AgoraIO/AgoraRtcEngine_iOS.git",
                  from: "4.2.1"),
-        .package(url: "https://github.com/shogo4405/HaishinKit.swift",
-                 from: "1.7.4"),
         .package(url: "https://github.com/socketio/socket.io-client-swift",
                  .upToNextMinor(from: "16.0.0")),
         .package(url: "https://github.com/daltoniam/Starscream", "4.0.4"..<"4.0.5")
