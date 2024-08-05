@@ -17,14 +17,12 @@ let package = Package(
         // .package(url: /* package url */, from: "1.0.0"),
         .package(
                 url: "https://github.com/shogo4405/HaishinKit.swift",
-                from: "1.5.1"
-                ),
+                    .upToNextMajor(from: "1.5.1")),
         .package(url: "https://github.com/AgoraIO/AgoraRtcEngine_iOS.git",
                  from: "4.2.1"),
         .package(url: "https://github.com/socketio/socket.io-client-swift",
                  .upToNextMinor(from: "16.0.0")),
-        .package(url: "https://github.com/dalton", 
-                 from: "4.0.4")
+        .package(url: "https://github.com/dalton", "4.0.4"..<"4.0.5")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
