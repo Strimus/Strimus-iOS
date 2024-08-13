@@ -15,14 +15,10 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(
-                url: "https://github.com/shogo4405/HaishinKit.swift",
-                    .upToNextMinor(from: "1.7.4")),
-        .package(url: "https://github.com/AgoraIO/AgoraRtcEngine_iOS.git",
-                 from: "4.2.1"),
-        .package(url: "https://github.com/socketio/socket.io-client-swift",
-                 .upToNextMinor(from: "16.0.0")),
-        .package(url: "https://github.com/daltoniam/Starscream", "4.0.4"..<"4.0.5")
+        .package(url: "https://github.com/shogo4405/HaishinKit.swift", "1.7.0"..<"1.7.6"),
+        .package(url: "https://github.com/AgoraIO/AgoraRtcEngine_iOS.git", .upToNextMinor(from: "4.2.1")),
+        .package(url: "https://github.com/socketio/socket.io-client-swift", .upToNextMinor(from: "16.0.0")),
+        .package(url: "https://github.com/daltoniam/Starscream", "4.0.0"..<"4.0.5")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -33,7 +29,8 @@ let package = Package(
                            "AmazonIVSBroadcast",
                            .product(name: "HaishinKit", package: "HaishinKit.swift"),
                            .product(name: "RtcBasic", package: "AgoraRtcEngine_iOS"),
-                           .product(name: "SocketIO", package: "socket.io-client-swift")]),
+                           .product(name: "SocketIO", package: "socket.io-client-swift"),
+                           .product(name: "Starscream", package: "Starscream")]),
         .testTarget(
             name: "MACH-SPSTests",
             dependencies: ["MACH-SPS"]),
